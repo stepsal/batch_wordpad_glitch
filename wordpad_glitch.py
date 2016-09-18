@@ -14,9 +14,9 @@ import os.path
 import re
 import PIL
 from PIL import Image
-input_dir = '/home/stephen.salmon/Pictures/Wordpad_Glitch'
-tmp_dir = '/home/stephen.salmon/Pictures/Wordpad_Glitch/tmp' # save the converted bitmaps here
-output_dir = '/home/stephen.salmon/Pictures/Wordpad_Glitch/output'
+input_dir = 'input'
+tmp_dir = 'tmp' # save the converted bitmaps here
+output_dir = 'output'
 image_formats = ['.jpg', '.jpeg', '.png', '.tif', '.bmp']
 
 def replace(img, replacements=()):
@@ -49,6 +49,9 @@ def wordpad_glitch(input_image, output_image):
 
 if __name__ == '__main__':
 
+    if not os.path.exists(input_dir):
+        print("could not find the input folder")
+        quit()
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     if not os.path.exists(tmp_dir):
@@ -74,6 +77,3 @@ if __name__ == '__main__':
            os.remove(filepath)
         except OSError:
            print("could not delete tmp bmp file {0}".format(filepath))
-
-
-
