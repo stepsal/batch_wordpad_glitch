@@ -1,6 +1,6 @@
 # batch_wordpad_glitch
-Batch Wordpad Glitch processer written in Python
-Requires Python 3.x
+Batch Wordpad Glitch processer written in Python. (Should work on 2.7 + 3.x )
+Requires pillow
 
 Here is a platform independent implementation of the wordpad glitch effect, with some added bonuses.
 (1) You dont need wordpad
