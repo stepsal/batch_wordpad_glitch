@@ -20,7 +20,7 @@ image_formats = ['.jpg', '.jpeg', '.png', '.tif', '.tiff', '.gif', '.bmp']
 '''The wordpad glitch effect changes depending on the orientation of the image
 If the ROTATE variable is set to true then four output images will be created for
 every input image after being rotated 90,180,270 degrees'''
-ROTATE = True
+ROTATE = False
 rotation_degrees = [90, 180, 270]
 
 
