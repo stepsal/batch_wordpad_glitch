@@ -9,13 +9,11 @@
 __author__ = "Justin Fay & Stephen Salmon"
 import io
 import functools
-import functools
 import os.path
 import re
 import PIL
 from PIL import Image
-input_dir = 'input'
-tmp_dir = 'tmp' # save the converted bitmaps here
+input_dir = '/home/stephen.salmon/Pictures/Wordpad_Glitch'
 output_dir = 'output'
 image_formats = ['.jpg', '.jpeg', '.png', '.tif', '.tiff', '.gif', '.bmp']
 
@@ -47,19 +45,6 @@ def wordpad_glitch(input_image, output_image):
     print("saved image {0}".format(output_image))
     wh.close()
 
-def wordpad_glitch2(input_image, output_image):
-    with open(input_image, 'rb') as rh:
-        img = io.BytesIO(rh.read())
-    img.seek(0)
-    header = img.read(16 + 24)
-    glitched = io.BytesIO(header + wordpad_replacer(img.read()))
-    glitched.seek(0)
-    output = io.BytesIO(glitched.read())
-    with open(output_image, 'wb') as wh:
-        wh.write(output.read())
-    print("saved image {0}".format(output_image))
-    wh.close()
-
 if __name__ == '__main__':
 
     if not os.path.exists(input_dir):
@@ -67,8 +52,6 @@ if __name__ == '__main__':
         quit()
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-    if not os.path.exists(tmp_dir):
-        os.makedirs(tmp_dir)
 
     # convert all the images in the input directory to bitmaps then glitch them
     for file in os.listdir(input_dir):
@@ -77,15 +60,9 @@ if __name__ == '__main__':
             if os.path.splitext(filepath)[1].lower() in image_formats:
                 img = Image.open(filepath)
                 filename = os.path.basename(filepath).split('.')[0]
-                img_tmp = os.path.join(tmp_dir, filename+'.bmp')
                 output_filepath = os.path.join(output_dir, 'wp_'+filename+'.bmp')
-
                 try:
                    img.save(output_filepath)
                 except IOError:
                    print("could not save bmp file {0}".format(output_filepath))
-
-                # img.save(output_filepath)
-                # output_filepath = os.path.join(output_dir, 'wp_'+img)
                 wordpad_glitch(output_filepath, output_filepath)
-                # print(output_filepath)
