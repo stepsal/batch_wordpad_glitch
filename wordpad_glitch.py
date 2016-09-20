@@ -5,17 +5,24 @@
 # Which means you dont need bloody wordpad anymore and it never hangs  on large images like wordpad used to.
 # Just throw a load of images into the input directory.. dont worry the script  converts them to bmp automatically
 # before batch processing because I know you are lazy like me
+# /home/stephen.salmon/Pictures/Wordpad_Glitch (leave this here for steve im lazy)
 
 __author__ = "Justin Fay & Stephen Salmon"
 import io
 import functools
 import os.path
 import re
-import PIL
 from PIL import Image
 input_dir = 'input'
 output_dir = 'output'
 image_formats = ['.jpg', '.jpeg', '.png', '.tif', '.tiff', '.gif', '.bmp']
+
+'''The wordpad glitch effect changes depending on the orientation of the image
+If the ROTATE variable is set to true then four output images will be created for
+every input image after being rotated 90,180,270 degrees'''
+ROTATE = True
+rotation_degrees = [90, 180, 270]
+
 
 def replace(img, replacements=()):
     for pattern, replacement in replacements:
@@ -45,6 +52,26 @@ def wordpad_glitch(input_image, output_image):
     print("saved image {0}".format(output_image))
     wh.close()
 
+
+def create_output_files(img, filename):
+    output_files = []
+    output_filepath = os.path.join(output_dir, 'wp_' + filename + '.bmp')
+    try:
+        img.save(output_filepath)
+        output_files.append(output_filepath)
+    except IOError:
+        print("could not save bmp file {0}".format(output_filepath))
+    if ROTATE:
+        for degrees in rotation_degrees:
+            output_filepath = os.path.join(output_dir, 'wp_' + str(degrees) + '_' + filename + '.bmp')
+            img = img.rotate(degrees)
+            try:
+                img.save(output_filepath)
+                output_files.append(output_filepath)
+            except IOError:
+                print("could not save bmp file {0}".format(output_filepath))
+    return output_files
+
 if __name__ == '__main__':
 
     if not os.path.exists(input_dir):
@@ -60,9 +87,5 @@ if __name__ == '__main__':
             if os.path.splitext(filepath)[1].lower() in image_formats:
                 img = Image.open(filepath)
                 filename = os.path.basename(filepath).split('.')[0]
-                output_filepath = os.path.join(output_dir, 'wp_'+filename+'.bmp')
-                try:
-                   img.save(output_filepath)
-                except IOError:
-                   print("could not save bmp file {0}".format(output_filepath))
-                wordpad_glitch(output_filepath, output_filepath)
+                for output_filepath in create_output_files(img, filename):
+                    wordpad_glitch(output_filepath, output_filepath)
