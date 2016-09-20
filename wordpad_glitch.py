@@ -13,7 +13,7 @@ import os.path
 import re
 import PIL
 from PIL import Image
-input_dir = '/home/stephen.salmon/Pictures/Wordpad_Glitch'
+input_dir = 'input'
 output_dir = 'output'
 image_formats = ['.jpg', '.jpeg', '.png', '.tif', '.tiff', '.gif', '.bmp']
 
