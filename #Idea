@@ -3,6 +3,7 @@
 (1) Rotate & Glitch function
    - The effects of the wordpad glitch are different when the image is rotated in different ways.
    - I will add an option where you can output four glitches for the one image if a ROTATE variable is activated
+   DONE!
 (2) Stich and Crop function
    - The wordpad glitch tesselates. That means its a pattern. The effects of the glitch can look much better if the output
    image is stiched together twice and the centre is cropped out of it. Note this only looks good on certain input images and its not
