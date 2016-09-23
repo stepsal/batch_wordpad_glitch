@@ -8,21 +8,21 @@
 # /home/stephen.salmon/Pictures/Wordpad_Glitch (leave this here for steve im lazy)
 
 __author__ = "Justin Fay & Stephen Salmon"
+import argparse
+import sys
 import io
 import functools
 import os.path
 import re
+import PIL
 from PIL import Image
-input_dir = 'input'
-output_dir = 'output'
-image_formats = ['.jpg', '.jpeg', '.png', '.tif', '.tiff', '.gif', '.bmp']
-
-'''The wordpad glitch effect changes depending on the orientation of the image
-If the ROTATE variable is set to true then four output images will be created for
-every input image after being rotated 90,180,270 degrees'''
+INPUT_DIR = 'input'
+OUTPUT_DIR = 'output'
+IMG_FORMATS = ['.jpg', '.jpeg', '.png', '.tif', '.tiff', '.gif', '.bmp']
 ROTATE = False
-rotation_degrees = [90, 180, 270]
-
+ROTATIONS = [90, 180, 270]
+ROTATE_ARGS = ''
+PATHS = []
 
 def replace(img, replacements=()):
     for pattern, replacement in replacements:
@@ -39,6 +39,7 @@ _WORDPAD_GLITCH = [
     (re.compile(sub), replacement) for (sub, replacement) in WORDPAD_GLITCH]
 wordpad_replacer = functools.partial(replace, replacements=_WORDPAD_GLITCH)
 
+
 def wordpad_glitch(input_image, output_image):
     with open(input_image, 'rb') as rh:
         img = io.BytesIO(rh.read())
@@ -53,18 +54,56 @@ def wordpad_glitch(input_image, output_image):
     wh.close()
 
 
+def create_output_dirs():
+    if ROTATE_ARGS == "ALL":
+        for degree in ROTATIONS:
+            sub_dir = str(degree)
+            path = os.path.join(OUTPUT_DIR, sub_dir)
+            PATHS.append(path)
+    else:
+        sub_dir = ROTATE_ARGS
+        path = os.path.join(OUTPUT_DIR, sub_dir)
+        PATHS.append(path)
+    for path in PATHS:
+        if not os.path.exists(path):
+            try:
+                os.makedirs(path)
+            except OSError as exc:
+                print(str(exc))
+                print("could not create subdir dir {0}".format(path))
+                sys.exit(2)
+    if not os.path.exists(OUTPUT_DIR):
+        try:
+            os.makedirs(OUTPUT_DIR)
+        except:
+            print("could not create output dir")
+            sys.exit(2)
+
+
 def create_output_files(img, filename):
     output_files = []
-    output_filepath = os.path.join(output_dir, 'wp_' + filename + '.bmp')
+    output_filepath = os.path.join(OUTPUT_DIR, 'wp_' + filename + '.bmp')
     try:
         img.save(output_filepath)
         output_files.append(output_filepath)
     except IOError:
         print("could not save bmp file {0}".format(output_filepath))
+
     if ROTATE:
-        for degrees in rotation_degrees:
-            output_filepath = os.path.join(output_dir, 'wp_' + str(degrees) + '_' + filename + '.bmp')
-            img = img.rotate(degrees)
+        if ROTATE_ARGS == "ALL":
+            for degrees in ROTATIONS:
+                output_directory = os.path.join(OUTPUT_DIR, str(degrees))
+                output_filepath = os.path.join(output_directory, 'wp_' + str(degrees) + '_' + filename + '.bmp')
+                img = img.rotate(degrees, expand=True)
+                try:
+                    img.save(output_filepath)
+                    output_files.append(output_filepath)
+                except IOError:
+                    print("could not save bmp file {0}".format(output_filepath))
+        else:
+            output_directory = os.path.join(OUTPUT_DIR, ROTATE_ARGS)
+            output_filepath = os.path.join(output_directory, 'wp_' + ROTATE_ARGS + '_' + filename + '.bmp')
+            img = img.rotate(int(ROTATE_ARGS) ,expand=True)
             try:
                 img.save(output_filepath)
                 output_files.append(output_filepath)
@@ -72,20 +111,47 @@ def create_output_files(img, filename):
                 print("could not save bmp file {0}".format(output_filepath))
     return output_files
 
-if __name__ == '__main__':
 
-    if not os.path.exists(input_dir):
+def main():
+    if not os.path.exists(INPUT_DIR):
         print("error: could not find the input folder")
-        quit()
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
+        sys.exit(2)
+    create_output_dirs()
 
     # convert all the images in the input directory to bitmaps then glitch them
-    for file in os.listdir(input_dir):
-        filepath = os.path.join(input_dir, file)
+    for file in os.listdir(INPUT_DIR):
+        filepath = os.path.join(INPUT_DIR, file)
         if os.path.isfile(filepath):
-            if os.path.splitext(filepath)[1].lower() in image_formats:
+            if os.path.splitext(filepath)[1].lower() in IMG_FORMATS:
                 img = Image.open(filepath)
                 filename = os.path.basename(filepath).split('.')[0]
                 for output_filepath in create_output_files(img, filename):
                     wordpad_glitch(output_filepath, output_filepath)
+
+if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser(description='Batch Wordpad Glitch')
+    parser.add_argument("-i", "--input", dest="INPUTDIR", help="input dir of source images")
+    parser.add_argument("-o", "--output", dest="OUTPUTDIR", help="ouput dir of glitched images")
+    parser.add_argument("-r", "--rotate", dest="ROTATE", help="Rotate the input images before glitching.. values \
+                        90, 180, 270, ALL")
+    try:
+        args = parser.parse_args()
+    except:
+        print("Args Error")
+        parser.print_help()
+        sys.exit(2)
+
+    if args.INPUTDIR:
+        INPUT_DIR = args.INPUTDIR
+    if args.OUTPUTDIR:
+        OUTPUT_DIR = args.OUTPUTDIR
+    if args.ROTATE:
+        if args.ROTATE not in ['90', '180', '270', 'ALL']:
+            print("Invalid Rotation Argument")
+            parser.print_help()
+            sys.exit(2)
+        else:
+            ROTATE = True
+            ROTATE_ARGS = args.ROTATE
+    main()
