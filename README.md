@@ -2,9 +2,7 @@
 Batch Wordpad Glitch processer written in Python. (Should work on 2.7 + 3.x )
 Requires pillow
 
-#Updated: New Rotate feature added.
-
-Here is a platform independent implementation of the wordpad glitch effect, with some added bonuses.
+PYthon implementation of the wordpad glitch effect.
 (1) You dont need wordpad
 (2) You dont need windows
 (3) You dont have to bother converting your images to BMP
@@ -12,9 +10,20 @@ Here is a platform independent implementation of the wordpad glitch effect, with
 (3) It 100 times faster
 (4) It never crashes on huge files like wordpad does.
 
-One of the interesting things about this is that now its possible to create you own implementation of how
-the wordpad glitch works by fucking around with the WORDPAD_GLITCH substitution parameters. Give me
-a shout if you come up with some new replacement pairs that look shit hot.
+[$ /usr/local/bin/python3.5 wordpad_glitch.py -help
+usage: wordpad_glitch.py [-h] [-i INPUTDIR] [-o OUTPUTDIR] [-r ROTATE]
+
+Batch Wordpad Glitch
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -i INPUTDIR, --input INPUTDIR
+                        input dir of source images
+  -o OUTPUTDIR, --output OUTPUTDIR
+                        ouput dir of glitched images
+  -r ROTATE, --rotate ROTATE
+                        Rotate the input images before glitching.. values 90,
+                        180, 270, ALL
 
 Big ups to Justin Fay for figuring out a very clever way of doing this.
 
