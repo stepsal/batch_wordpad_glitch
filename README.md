@@ -1,6 +1,8 @@
 # batch_wordpad_glitch
-Batch Wordpad Glitch processer written in Python. (Should work on 2.7 + 3.x )
-Requires pillow
+Batch Wordpad Glitch processer written in Python.
+Tested with python3. Should work with python2 as well.
+
+Requires Pillow. `pip install Pillow` should work. If not, see
 
 ### Usage
 
