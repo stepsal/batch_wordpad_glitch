@@ -13,7 +13,7 @@ interim you can install it directly using git.
 ## Usage
 
 ```
-usage: wordpad_glitch.py [-h] [-i INPUTDIR] [-o OUTPUTDIR] [-r ROTATE]
+usage: wordpadglitch [-h] [-i INPUTDIR] [-o OUTPUTDIR] [-r ROTATE]
 
 Batch Wordpad Glitch
 
