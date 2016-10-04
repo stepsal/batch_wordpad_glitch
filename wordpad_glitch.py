@@ -1,21 +1,24 @@
 # Python Wordpad Glitch Batch Processor by Stephen Salmon
 # stephensalmon.mayo@gmail.com
-# Justin Fay gets credit for coming up with such a neat way to achieve this during a ciggie break.
+# Justin Fay gets credit for coming up with such a neat way to
+# achieve this during a ciggie break.
 # This script recreate the classic wordpad glitch in python
-# Which means you dont need bloody wordpad anymore and it never hangs  on large images like wordpad used to.
-# Just throw a load of images into the input directory.. dont worry the script  converts them to bmp automatically
-# before batch processing because I know you are lazy like me
-# /home/stephen.salmon/Pictures/Wordpad_Glitch (leave this here for steve im lazy)
+# Which means you dont need bloody wordpad anymore and it never hangs
+# on large images like wordpad used to.
+# Just throw a load of images into the input directory.. dont worry
+# the script  converts them to bmp automatically.
 
 __author__ = "Justin Fay & Stephen Salmon"
+
 import argparse
-import sys
-import io
 import functools
+import io
 import os.path
 import re
-import PIL
+import sys
+
 from PIL import Image
+
 INPUT_DIR = 'input'
 OUTPUT_DIR = 'output'
 IMG_FORMATS = ['.jpg', '.jpeg', '.png', '.tif', '.tiff', '.gif', '.bmp']
@@ -23,11 +26,6 @@ ROTATE = False
 ROTATIONS = [90, 180, 270]
 ROTATE_ARGS = ''
 PATHS = []
-
-def replace(img, replacements=()):
-    for pattern, replacement in replacements:
-        img = pattern.sub(replacement, img)
-    return img
 
 WORDPAD_GLITCH = [
     (b'\x07', b'\x27'),
@@ -37,6 +35,14 @@ WORDPAD_GLITCH = [
 
 _WORDPAD_GLITCH = [
     (re.compile(sub), replacement) for (sub, replacement) in WORDPAD_GLITCH]
+
+
+def replace(img, replacements=()):
+    for pattern, replacement in replacements:
+        img = pattern.sub(replacement, img)
+    return img
+
+
 wordpad_replacer = functools.partial(replace, replacements=_WORDPAD_GLITCH)
 
 
@@ -93,17 +99,22 @@ def create_output_files(img, filename):
         if ROTATE_ARGS == "ALL":
             for degrees in ROTATIONS:
                 output_directory = os.path.join(OUTPUT_DIR, str(degrees))
-                output_filepath = os.path.join(output_directory, 'wp_' + str(degrees) + '_' + filename + '.bmp')
+                output_filepath = os.path.join(
+                    output_directory,
+                    'wp_{0}_{1}.bmp'.format(degrees, filename))
                 img = img.rotate(degrees, expand=True)
                 try:
                     img.save(output_filepath)
                     output_files.append(output_filepath)
                 except IOError:
-                    print("could not save bmp file {0}".format(output_filepath))
+                    print("could not save bmp file {0}".format(
+                        output_filepath))
         else:
             output_directory = os.path.join(OUTPUT_DIR, ROTATE_ARGS)
-            output_filepath = os.path.join(output_directory, 'wp_' + ROTATE_ARGS + '_' + filename + '.bmp')
-            img = img.rotate(int(ROTATE_ARGS) ,expand=True)
+            output_filepath = os.path.join(
+                output_directory,
+                'wp_{0}_{1}.bmp'.format(ROTATE_ARGS, filename))
+            img = img.rotate(int(ROTATE_ARGS), expand=True)
             try:
                 img.save(output_filepath)
                 output_files.append(output_filepath)
@@ -128,13 +139,21 @@ def main():
                 for output_filepath in create_output_files(img, filename):
                     wordpad_glitch(output_filepath, output_filepath)
 
+
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Batch Wordpad Glitch')
-    parser.add_argument("-i", "--input", dest="INPUTDIR", help="input dir of source images")
-    parser.add_argument("-o", "--output", dest="OUTPUTDIR", help="ouput dir of glitched images")
-    parser.add_argument("-r", "--rotate", dest="ROTATE", help="Rotate the input images before glitching.. values \
-                        90, 180, 270, ALL")
+    parser.add_argument(
+        "-i", "--input", dest="INPUTDIR", help="input dir of source images")
+    parser.add_argument(
+        "-o", "--output",
+        dest="OUTPUTDIR",
+        help="ouput dir of glitched images")
+    parser.add_argument(
+        "-r", "--rotate",
+        dest="ROTATE",
+        help="Rotate the input images before glitching.. "
+        "values 90, 180, 270, ALL")
     try:
         args = parser.parse_args()
     except:
