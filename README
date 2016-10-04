@@ -1,10 +1,16 @@
 # batch_wordpad_glitch
+
 Batch Wordpad Glitch processer written in Python.
 Tested with python3. Should work with python2 as well.
 
-Requires Pillow. `pip install Pillow` should work.
+## Install
 
-### Usage
+Currently the project cannot be installed from pypi, in the
+interim you can install it directly using git.
+
+`pip install -e git+https://github.com/justinfay/batch_wordpad_glitch#egg=wordpad_glitch`
+
+## Usage
 
 ```
 usage: wordpad_glitch.py [-h] [-i INPUTDIR] [-o OUTPUTDIR] [-r ROTATE]
@@ -23,5 +29,3 @@ optional arguments:
 ```
 
 Big ups to Justin Fay for figuring out a very clever way of doing this.
-
- 

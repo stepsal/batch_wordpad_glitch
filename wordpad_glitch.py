@@ -140,8 +140,7 @@ def main():
                     wordpad_glitch(output_filepath, output_filepath)
 
 
-if __name__ == '__main__':
-
+def parse_args():
     parser = argparse.ArgumentParser(description='Batch Wordpad Glitch')
     parser.add_argument(
         "-i", "--input", dest="INPUTDIR", help="input dir of source images")
@@ -162,8 +161,10 @@ if __name__ == '__main__':
         sys.exit(2)
 
     if args.INPUTDIR:
+        global INPUT_DIR
         INPUT_DIR = args.INPUTDIR
     if args.OUTPUTDIR:
+        global OUTPUT_DIR
         OUTPUT_DIR = args.OUTPUTDIR
     if args.ROTATE:
         if args.ROTATE not in ['90', '180', '270', 'ALL']:
@@ -171,6 +172,12 @@ if __name__ == '__main__':
             parser.print_help()
             sys.exit(2)
         else:
+            global ROTATE
             ROTATE = True
+            global ROTATE_ARGS
             ROTATE_ARGS = args.ROTATE
     main()
+
+
+if __name__ == '__main__':
+    parse_args()
